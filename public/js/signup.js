@@ -7,7 +7,7 @@ const $errorTemplate=document.getElementById("error-message").innerHTML
 
 $centeredForm.addEventListener("click",async (event)=>{
     event.preventDefault()
-
+    console.log(event)
     if(event.target.matches("button#join")){
         //User Credentials
         const email=event.srcElement.parentNode.elements[0].value
@@ -47,5 +47,10 @@ $centeredForm.addEventListener("click",async (event)=>{
             }catch(error){
                 console.log(error.message)
             }
+    }
+
+    //login link
+    if(event.target.matches("a#loginlink")){
+        location.href='/index.html'
     }
 })
