@@ -1,0 +1,31 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start":"node src/app.js",
+    "dev": "env-cmd -f ./config/prod.env nodemon src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.4",
+    "device-detector-js": "^2.1.1",
+    "express": "^4.17.1",
+    "express-useragent": "^1.0.13",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.4.1",
+    "mongoose": "^5.3.16",
+    "mongoose-unique-validator": "^2.0.3",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.2"
+  },
+  "devDependencies": {
+    "body-parser": "^1.19.0",
+    "env-cmd": "^10.1.0",
+    "reload": "^3.0.4"
+  }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Todo</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+    <h1>To-Do</h1>
+    <form>
+        <input type="text" id="myText" class="todo_desc" placeholder="Type your to-do task..." autofocus>
+        <button class="add_btn" id="add-btn">+</button>
+    </form>
+
+    <!-- List Wrapper -->
+    <div class="list-wrapper" id="todo-wrapper">
+        <!-- <div class="list-item" id="list-item">
+            <p class="list-items">{{description}}</p>
+            <button id="removeBtn" class="removeBtn" data-id={{id}}>X</button>
+        </div> -->
+    </div>
+    
+    <!-- Down Menu -->
+    <div class="navbar" id="navbar">
+        <p id="clear-all">Clear All</p>
+        <p id="logout">Log Out</p>
+        <p id="devices">Device's</p>
+        <p id="forgotpassword">Change Password</p>
+    </div>       
+    <div id="changepassword">
+        <form action="/index.html" autocomplete="off">
+            <label>New Password</label>
+            <input type="password" id="new-password" value="newpass" placeholder="Type your new password" required>
+            <button id="join">Change Password</button>
+    </div>
+
+    <!-- Device Integration -->
+    <div id="myModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="device-list">
+            
+        </div>
+        <p id="logoutall">Logout All</p>
+    </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Device List -->
+    <script id="devices-list" type="text/html">
+        <div id="device-item_wrapper">
+            <p id="device-name" data-deviceName={{deviceName}}>{{deviceName}}</p>
+        </div>
+    </script>
+
+    <!-- Todo List -->
+    <script id="new-todo" type="text/html">
+        <div class="list-item" id="list-item">
+            <p class="list-items">{{description}}</p>
+            <button id="removeBtn" class="removeBtn" data-id={{id}}>X</button>
+        </div>
+    </script>
+
+    <!-- Change Password Field -->
+    <script id="changepassword-wrapper" type="text/html">
+        <div id="changepassword">
+            <p>Working</p>
+        </div>
+    </script>
+
+    <script src="https://unpkg.com/mustache@latest"></script>
+    <script src="/reload/reload.js"></script>
+    <script src="./js/todo.js"></script>
+</body></html>
