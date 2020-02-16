@@ -7,7 +7,6 @@ const $errorTemplate=document.getElementById("error-message").innerHTML
 
 $centeredForm.addEventListener("click",async (event)=>{
     event.preventDefault()
-    console.log(event)
     if(event.target.matches("button#join")){
         //User Credentials
         const email=event.srcElement.parentNode.elements[0].value

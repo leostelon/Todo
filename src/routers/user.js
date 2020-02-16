@@ -18,14 +18,14 @@ router.post("/user",detect,async(req,res)=>{
         const user=new User(req.body)
         const token=await user.generateAuthToken()
         const deviceDetails={
-            name:req.device.name,
-            tokens:{
-                token,
-                owner:user._id,
-            }
+                devicename:req.device.name,
+                tokens:{
+                    token,
+                    owner:user.tokens[user.tokens.length-1]._id,
+                }
         }
-        const device=new Device({name:deviceDetails.name})
-        await device.detectDevice(user._id,req.device.name,deviceDetails.tokens)
+        const device=new Device({username:user.username})
+        await device.detectDevice(req.device.name,deviceDetails,token)
         await user.save()
 
         res.cookie("Authorization",token)
@@ -41,14 +41,14 @@ router.post("/user/me",detect,async (req,res)=>{
         const user=await User.findUserByData(req.body.email,req.body.password)
         const token=await user.generateAuthToken()
         const deviceDetails={
-            name:req.device.name,
+            devicename:req.device.name,
             tokens:{
                 token,
                 owner:user.tokens[user.tokens.length-1]._id,
             }
-        }
-        const device=new Device({name:deviceDetails.name})
-        await device.detectDevice(user._id,req.device.name,deviceDetails.tokens)
+        }   
+        const device=await Device.findOne({username:user.username})
+        await device.detectDevice(req.device.name,deviceDetails,deviceDetails.tokens)
 
         res.cookie("Authorization",token)
         res.status(200).send({user,token})
@@ -108,8 +108,7 @@ router.post("/user/logout",auth,async(req,res)=>{
 router.post("/user/logoutall",auth,async(req,res)=>{
     try{
         req.user.tokens=[]
-        req.user.devices=[]
-        await Device.deleteMany({})
+        await Device.deleteOne({username:req.user.username})
         await req.user.save()
         res.send({
             message:"Logged out of all devices!",
@@ -126,26 +125,28 @@ router.post("/user/logout/particular/:devicename",auth,async(req,res)=>{
     const devicename=req.params.devicename
 
     //To get Device document based on params
-    const deviceTokens=await Device.findOne({"name":devicename})
-    //To get tokens based on Device obtained(tokens array inherits array properties)
-    const deviceTokenList=deviceTokens.tokens.map(element=>{
-        if(element.token){
-            return element
-        }
-    })
-    //Checking if device exist's
-    if(deviceTokenList){
+    const deviceData=await Device.findOne({username:"new"})
+
+    //To get tokens of desired devicename
+    particularDevice=deviceData.devices.find(element=>element.devicename===devicename)
+
+    // //Checking if device exist's
+    if(particularDevice){
         //retrieving all tokens from user as tokens array inherits all array properties
         const tokenList=req.user.tokens.map(element=>{
             const test=Boolean(element.token)
             return element.token
         })
+
         //Removing all tokens from user tokens documnet
-        deviceTokenList.forEach(async (element,index)=>{
+        particularDevice.tokens.forEach(async (element,index)=>{
             req.user.tokens.pull(element.owner)
             })
+        //Removing device object from device document
+        deviceData.devices.pull(particularDevice._id)
+
         await req.user.save()
-        await Device.deleteMany({"name":devicename})
+        await deviceData.save()
         res.send("Removed account from device")
     }else{
         res.send("no device found")
@@ -155,8 +156,8 @@ router.post("/user/logout/particular/:devicename",auth,async(req,res)=>{
 //Get Devices
 router.get("/devices",auth,async(req,res,next)=>{
     try{
-        const deviceData=await Device.find({})
-        const deviceNameList=deviceData.map(element=>element.name)
+        const deviceData=await Device.findOne({username:req.user.username})
+        const deviceNameList=deviceData.devices.map(element=>element.devicename)
         res.status(200).send(deviceNameList)
     }catch(error){
         res.status(500).send(error)
