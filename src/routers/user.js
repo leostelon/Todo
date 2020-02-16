@@ -125,7 +125,7 @@ router.post("/user/logout/particular/:devicename",auth,async(req,res)=>{
     const devicename=req.params.devicename
 
     //To get Device document based on params
-    const deviceData=await Device.findOne({username:"new"})
+    const deviceData=await Device.findOne({username:req.user.username})
 
     //To get tokens of desired devicename
     particularDevice=deviceData.devices.find(element=>element.devicename===devicename)
